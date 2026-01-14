@@ -17,8 +17,14 @@ depends_on = None
 
 
 def upgrade():
-    pass
+    op.create_table(
+        'plants',
+        sa.Column('id', sa.Integer(), primary_key=True),
+        sa.Column('name', sa.String(100), nullable=False),
+        sa.Column('image', sa.String(255), nullable=True),
+        sa.Column('price', sa.Float(), nullable=True)
+    )
 
 
 def downgrade():
-    pass
+    op.drop_table('plants')

@@ -52,15 +52,33 @@ class TestPlant:
 
     def test_plant_by_id_get_route(self):
         '''has a resource available at "/plants/<int:id>".'''
-        response = app.test_client().get('/plants/1')
-        assert(response.status_code == 200)
+        with app.app_context():
+            p = Plant(name="Douglas Fir")
+            db.session.add(p)
+            db.session.commit()
+            plant_id = p.id
+
+            response = app.test_client().get(f'/plants/{plant_id}')
+            assert(response.status_code == 200)
+
+            db.session.delete(p)
+            db.session.commit()
 
     def test_plant_by_id_get_route_returns_one_plant(self):
         '''returns JSON representing one Plant object at "/plants/<int:id>".'''
-        response = app.test_client().get('/plants/1')
-        data = json.loads(response.data.decode())
+        with app.app_context():
+            p = Plant(name="Douglas Fir")
+            db.session.add(p)
+            db.session.commit()
+            plant_id = p.id
 
-        assert(type(data) == dict)
-        assert(data["id"])
-        assert(data["name"])
+            response = app.test_client().get(f'/plants/{plant_id}')
+            data = json.loads(response.data.decode())
+
+            assert(type(data) == dict)
+            assert(data["id"])
+            assert(data["name"])
+
+            db.session.delete(p)
+            db.session.commit()
                 

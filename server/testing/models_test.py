@@ -25,8 +25,15 @@ class TestPlant:
     def test_can_be_retrieved(self):
         '''can be used to retrieve records from the database.'''
         with app.app_context():
-            p = Plant.query.all()
-            assert(p)
+            p = Plant(name="Douglas Fir")
+            db.session.add(p)
+            db.session.commit()
+            
+            plants = Plant.query.all()
+            assert(plants)
+            
+            db.session.delete(p)
+            db.session.commit()
 
     def test_can_be_serialized(self):
         '''can create records with a to_dict() method for serialization.'''
